@@ -42,15 +42,22 @@ class CPHInline
     public bool Execute()
     {
         // Change hourValue to max length of stream in hours
-        int maxHourValue = 24;
+        int maxHourValue = 2;
         maxTotalTimeInSeconds = maxHourValue * (3600);
         // Change hourValue to initial length of stream in hours
-        int hourValue = 3;
-        secondsLeft = hourValue * (3600);
+        int hourValue = 1;
+        secondsLeft = hourValue * (3600) + 1;
         totalTimeInSeconds = secondsLeft;
-        //countdownTimer.Start();
-		countdownTimer.Stop();
+        countdownTimer.Start();
         return true;
+    }
+	
+    public bool Stop()
+    {
+        // Set to Scene and Source of your text source and a message once timer hits zero
+        CPH.ObsSetGdiText("SubathonTimer", "SubathonCounter", "Timer cancelled!");
+        countdownTimer.Stop();
+		return true;
     }
 
     public bool Tier1()
@@ -69,7 +76,6 @@ class CPHInline
             totalTimeInSeconds = maxTotalTimeInSeconds;
 			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
         }
-
         return true;
     }
 
@@ -89,7 +95,6 @@ class CPHInline
             totalTimeInSeconds = maxTotalTimeInSeconds;
 			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
         }
-
         return true;
     }
 
@@ -108,9 +113,8 @@ class CPHInline
             secondsLeft = secondsLeft + (maxTotalTimeInSeconds - totalTimeInSeconds);
             totalTimeInSeconds = maxTotalTimeInSeconds;
 			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
-;
-        }
 
+        }
         return true;
     }
 }
