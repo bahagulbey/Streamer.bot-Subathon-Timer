@@ -7,6 +7,10 @@ class CPHInline
     public int secondsLeft;
     public int totalTimeInSeconds;
     public int maxTotalTimeInSeconds;
+    // Set to Scene and Source of your text source and a message once timer hits zero
+    public string scene = "SubathonTimer";
+    public string source = "SubathonCounter";
+
     public void Init()
     {
         countdownTimer = new System.Timers.Timer(1000);
@@ -21,6 +25,28 @@ class CPHInline
         countdownTimer.Dispose();
     }
 
+    private void StopTimer(string message) 
+    {
+        CPH.ObsSetGdiText(scene, source, message);
+        countdownTimer.Stop();
+    }
+
+    private void AddMinutes(int minutesToAdd)
+    {
+        int secondsToAdd = minutesToAdd * 60;
+        if ((totalTimeInSeconds + secondsToAdd) < maxTotalTimeInSeconds)
+        {
+            totalTimeInSeconds = totalTimeInSeconds + secondsToAdd;
+            secondsLeft = secondsLeft + secondsToAdd;
+        }
+        else
+        {
+            secondsLeft = secondsLeft + (maxTotalTimeInSeconds - totalTimeInSeconds);
+            totalTimeInSeconds = maxTotalTimeInSeconds;
+			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
+        }
+    }
+
     public void OnTimedEvent(Object source, ElapsedEventArgs e)
     {
         secondsLeft--;
@@ -28,20 +54,17 @@ class CPHInline
         string countdownString = time.ToString(@"hh\:mm\:ss");
         if (secondsLeft == 0)
         {
-            // Set to Scene and Source of your text source and a message once timer hits zero
-            CPH.ObsSetGdiText("SubathonTimer", "SubathonCounter", "All done!");
-            countdownTimer.Stop();
+            StopTimer("All done!");
         }
         else
         {
-            // Set to Scene and Source of your text source
-            CPH.ObsSetGdiText("SubathonTimer", "SubathonCounter", countdownString);
+            CPH.ObsSetGdiText(scene, source, countdownString);
         }
     }
 
     public bool Execute()
     {
-        // Change hourValue to max length of stream in hours
+        // Change maxHourValue to max length of stream in hours
         int maxHourValue = 2;
         maxTotalTimeInSeconds = maxHourValue * (3600);
         // Change hourValue to initial length of stream in hours
@@ -54,28 +77,15 @@ class CPHInline
 	
     public bool Stop()
     {
-        // Set to Scene and Source of your text source and a message once timer hits zero
-        CPH.ObsSetGdiText("SubathonTimer", "SubathonCounter", "Timer cancelled!");
-        countdownTimer.Stop();
-		return true;
+        StopTimer("Timer cancelled!");
+        return true;
     }
 
     public bool Tier1()
     {
         // Change minuteValue to minutes to add to the timer per Tier 1 sub
         int minuteValue = 2;
-        int secondsToAdd = minuteValue * 60;
-        if ((totalTimeInSeconds + secondsToAdd) < maxTotalTimeInSeconds)
-        {
-            totalTimeInSeconds = totalTimeInSeconds + secondsToAdd;
-            secondsLeft = secondsLeft + secondsToAdd;
-        }
-        else
-        {
-            secondsLeft = secondsLeft + (maxTotalTimeInSeconds - totalTimeInSeconds);
-            totalTimeInSeconds = maxTotalTimeInSeconds;
-			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
-        }
+        AddMinutes(minuteValue);
         return true;
     }
 
@@ -83,18 +93,7 @@ class CPHInline
     {
         // Change minuteValue to minutes to add to the timer per Tier 2 sub
         int minuteValue = 5;
-        int secondsToAdd = minuteValue * 60;
-        if ((totalTimeInSeconds + secondsToAdd) < maxTotalTimeInSeconds)
-        {
-            totalTimeInSeconds = totalTimeInSeconds + secondsToAdd;
-            secondsLeft = secondsLeft + secondsToAdd;
-        }
-        else
-        {
-            secondsLeft = secondsLeft + (maxTotalTimeInSeconds - totalTimeInSeconds);
-            totalTimeInSeconds = maxTotalTimeInSeconds;
-			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
-        }
+        AddMinutes(minuteValue);
         return true;
     }
 
@@ -102,19 +101,7 @@ class CPHInline
     {
         // Change minuteValue to minutes to add to the timer per Tier 3 sub
         int minuteValue = 12;
-        int secondsToAdd = minuteValue * 60;
-        if ((totalTimeInSeconds + secondsToAdd) < maxTotalTimeInSeconds)
-        {
-            totalTimeInSeconds = totalTimeInSeconds + secondsToAdd;
-            secondsLeft = secondsLeft + secondsToAdd;
-        }
-        else
-        {
-            secondsLeft = secondsLeft + (maxTotalTimeInSeconds - totalTimeInSeconds);
-            totalTimeInSeconds = maxTotalTimeInSeconds;
-			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
-
-        }
+        AddMinutes(minuteValue);
         return true;
     }
 }
