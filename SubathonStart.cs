@@ -25,9 +25,7 @@ class CPHInline
     private void StopTimer(string message) 
     {
         // Set to Scene and Source of your text source
-        string scene = "SubathonTimer";
-        string source = "SubathonCounter";
-        CPH.ObsSetGdiText(scene, source, message);
+        CPH.ObsSetGdiText("SubathonTimer", "SubathonCounter", message);
         countdownTimer.Stop();
     }
 
@@ -59,9 +57,7 @@ class CPHInline
         else
         {
             // Set to Scene and Source of your text source
-            string scene = "SubathonTimer";
-            string source = "SubathonCounter";
-            CPH.ObsSetGdiText(scene, source, countdownString);
+            CPH.ObsSetGdiText("SubathonTimer", "SubathonCounter", countdownString);
         }
     }
 
