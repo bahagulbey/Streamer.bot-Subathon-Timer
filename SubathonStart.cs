@@ -7,7 +7,6 @@ class CPHInline
     public int secondsLeft;
     public int totalTimeInSeconds;
     public int maxTotalTimeInSeconds;
-
     public void Init()
     {
         countdownTimer = new System.Timers.Timer(1000);
@@ -22,7 +21,7 @@ class CPHInline
         countdownTimer.Dispose();
     }
 
-    private void StopTimer(string message) 
+    private void StopTimer(string message)
     {
         // Set to Scene and Source of your text source
         CPH.ObsSetGdiText("SubathonTimer", "SubathonCounter", message);
@@ -41,7 +40,7 @@ class CPHInline
         {
             secondsLeft = secondsLeft + (maxTotalTimeInSeconds - totalTimeInSeconds);
             totalTimeInSeconds = maxTotalTimeInSeconds;
-			CPH.SendMessage("We've reached the subathon limit! No more time will be added.",true);
+            CPH.SendMessage("We've reached the subathon limit! No more time will be added.", true);
         }
     }
 
@@ -53,6 +52,7 @@ class CPHInline
         if (secondsLeft == 0)
         {
             StopTimer("All done!");
+            CPH.RunAction("SubathonDone");
         }
         else
         {
@@ -64,16 +64,16 @@ class CPHInline
     public bool Execute()
     {
         // Change maxHourValue to max length of stream in hours
-        int maxHourValue = 2;
+        int maxHourValue = 24;
         maxTotalTimeInSeconds = maxHourValue * (3600);
         // Change hourValue to initial length of stream in hours
-        int hourValue = 1;
+        int hourValue = 3;
         secondsLeft = hourValue * (3600) + 1;
         totalTimeInSeconds = secondsLeft;
         countdownTimer.Start();
         return true;
     }
-	
+
     public bool Stop()
     {
         StopTimer("Timer cancelled!");
