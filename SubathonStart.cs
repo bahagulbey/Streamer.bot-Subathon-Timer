@@ -9,7 +9,7 @@ class CPHInline
     public int subathonCapInSeconds;
     public void Init()
     {
-        countdownTimer = new System.Timers.Timer(1000);
+        countdownTimer = new System.Timers.Timer(10800);
         countdownTimer.Elapsed += OnTimedEvent;
         countdownTimer.AutoReset = true;
         countdownTimer.Enabled = true;
